@@ -1,0 +1,11 @@
+body {
+  background-color: #233f50;
+}
+
+.content .tile {
+  height: 50px;
+  width: 50px;
+  background-color: gray;
+  float: left;
+  margin: 1px;
+}
