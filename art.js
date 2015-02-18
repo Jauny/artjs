@@ -1,30 +1,18 @@
 var Tile = React.createClass({
-  getInitialState: function() {
-    return {color: this.props.color};
+  mixins: [React.addons.PureRenderMixin],
+
+  propTypes: {
+    onOver: React.PropTypes.func
   },
 
-  generateColor: function() {
-    var hexa = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f'],
-      color = [];
-
-    for (var i = 0; i < 6; i++) {
-      var index = Math.floor(Math.ceil(Math.random() * 10) * 1.4);
-      color.unshift(hexa[index]);
-    }
-    return '#' + color.join('');
-  },
-
-  changeColor: function() {
-    if (this.props.active) {
-      this.setState({color: this.generateColor()});
-    }
+  onChange: function() {
+    this.props.onOver(this.props.index);
   },
 
   render: function() {
-    var style = {backgroundColor: this.state.color};
+    var style = {backgroundColor: this.props.color};
     return (
-      <div className="tile" onClick={this.changeColor}
-           onMouseOver={this.changeColor} style={style}>
+      <div className="tile" onMouseOver={this.onChange} style={style}>
       </div>
     );
   }
@@ -34,27 +22,49 @@ var Board = React.createClass({
   getInitialState: function() {
     return {
       active: false,
-      tilesData: this.generateTilesData()
+      tilesData: this.generateTilesData(),
+      hue: [0, 1, 2, 3, 4, 5]
     };
-  },
-
-  generateTilesData: function() {
-    var windowHeight = window.innerHeight,
-        windowWidth = window.innerWidth,
-        tileSize = 52,
-        lineLength = Math.floor(windowWidth / tileSize),
-        columnHeight = Math.floor(windowHeight / tileSize),
-        tileAmount = lineLength * columnHeight;
-
-    var tilesData = [];
-    for (var i = 0; i < tileAmount; i++) {
-      tilesData.push('#808080');
-    }
-    return tilesData;
   },
 
   componentDidMount: function() {
     window.addEventListener('keydown', this.handleSpace);
+  },
+
+  generateTilesData: function() {
+    if (!this.props.tilesData) {
+      var windowHeight = window.innerHeight,
+          windowWidth = window.innerWidth,
+          tileSize = 52,
+          lineLength = Math.floor(windowWidth / tileSize),
+          columnHeight = Math.floor(windowHeight / tileSize),
+          tileAmount = lineLength * columnHeight;
+
+      var tilesData = {};
+      for (var i = 0; i < tileAmount; i++) {
+        tilesData[i] = '#808080';
+      }
+      return tilesData;
+    } else {
+      return this.props.tilesData;
+    }
+  },
+
+  generateColor: function() {
+    var hexa = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f'],
+      color = [0, 0, 0, 0, 0, 0];
+
+    for (var index in this.state.hue) {
+      var code = Math.floor(Math.ceil(Math.random() * 10) * 1.4);
+      color[index] = hexa[code];
+    }
+    return '#' + color.join('');
+  },
+
+  changeTileColor: function(index) {
+    tmp = this.state.tilesData;
+    tmp[index] = this.generateColor();
+    this.setState({tilesData: tmp});
   },
 
   handleSpace: function(e) {
@@ -65,12 +75,11 @@ var Board = React.createClass({
   },
 
   render: function() {
-    var tilesData = this.props.tilesData || this.generateTilesData(),
-        activeState = this.state.active;
+    var tiles = [];
 
-    tiles = tilesData.map(function(color) {
-      return <Tile color={color} active={activeState} />
-    });
+    for (var i in this.state.tilesData) {
+      tiles.push(<Tile color={this.state.tilesData[i]} active={this.state.activeState} index={i} onOver={this.changeTileColor} />);
+    };
 
     return (
       <div onKeyPress={this.handleSpace}>
