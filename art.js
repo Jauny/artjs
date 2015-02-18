@@ -62,9 +62,11 @@ var Board = React.createClass({
   },
 
   changeTileColor: function(index) {
-    tmp = this.state.tilesData;
-    tmp[index] = this.generateColor();
-    this.setState({tilesData: tmp});
+    if (this.state.active){
+      tmp = this.state.tilesData;
+      tmp[index] = this.generateColor();
+      this.setState({tilesData: tmp});
+    }
   },
 
   handleSpace: function(e) {
