@@ -1,13 +1,13 @@
 var Tile = React.createClass({
   getInitialState: function() {
-    return {color: false};
+    return {color: this.props.color};
   },
 
   generateColor: function() {
     var hexa = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f'],
-      color = [0,0,0,0];
+      color = [];
 
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < 6; i++) {
       var index = Math.floor(Math.ceil(Math.random() * 10) * 1.4);
       color.unshift(hexa[index]);
     }
@@ -33,8 +33,24 @@ var Tile = React.createClass({
 var Board = React.createClass({
   getInitialState: function() {
     return {
-      active: false
+      active: false,
+      tilesData: this.generateTilesData()
+    };
+  },
+
+  generateTilesData: function() {
+    var windowHeight = window.innerHeight,
+        windowWidth = window.innerWidth,
+        tileSize = 52,
+        lineLength = Math.floor(windowWidth / tileSize),
+        columnHeight = Math.floor(windowHeight / tileSize),
+        tileAmount = lineLength * columnHeight;
+
+    var tilesData = [];
+    for (var i = 0; i < tileAmount; i++) {
+      tilesData.push('#808080');
     }
+    return tilesData;
   },
 
   componentDidMount: function() {
@@ -49,17 +65,12 @@ var Board = React.createClass({
   },
 
   render: function() {
-    var windowHeight = window.innerHeight,
-        windowWidth = window.innerWidth,
-        tileSize = 52,
-        lineLength = Math.floor(windowWidth / tileSize),
-        columnHeight = Math.floor(windowHeight / tileSize),
-        tileAmount = lineLength * columnHeight;
+    var tilesData = this.props.tilesData || this.generateTilesData(),
+        activeState = this.state.active;
 
-    var tiles = [];
-    for (var i = 0; i < tileAmount; i++) {
-      tiles.push(<Tile active={this.state.active} />);
-    }
+    tiles = tilesData.map(function(color) {
+      return <Tile color={color} active={activeState} />
+    });
 
     return (
       <div onKeyPress={this.handleSpace}>
