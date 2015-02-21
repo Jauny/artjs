@@ -18,12 +18,38 @@ var Tile = React.createClass({
   }
 });
 
+var PaletteColor = React.createClass({
+  getInitialState: function() {
+    return {
+      color: this.props.color
+    };
+  },
+
+  onClick: function() {
+    this.props.onClick(this.state.color);
+  },
+
+  render: function() {
+    var style = {backgroundColor: this.props.color};
+    return (
+      <div className='tile' onClick={this.onClick} style={style}>
+      </div>
+    )
+  }
+});
+
 var Board = React.createClass({
   getInitialState: function() {
     return {
       active: false,
       tilesData: this.generateTilesData(),
-      hue: [0, 1, 2, 3, 4, 5]
+      hue: [0, 1, 2, 3, 4, 5],
+      hueMap: {
+        'red': [0, 1],
+        'green': [2, 3],
+        'blue': [4, 5],
+        'yellow': [0, 1, 2, 3]
+      }
     };
   },
 
@@ -54,10 +80,11 @@ var Board = React.createClass({
     var hexa = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f'],
       color = [0, 0, 0, 0, 0, 0];
 
-    for (var index in this.state.hue) {
+    this.state.hue.forEach(function(index) {
       var code = Math.floor(Math.ceil(Math.random() * 10) * 1.4);
       color[index] = hexa[code];
-    }
+    });
+
     return '#' + color.join('');
   },
 
@@ -67,6 +94,10 @@ var Board = React.createClass({
       tmp[index] = this.generateColor();
       this.setState({tilesData: tmp});
     }
+  },
+
+  changePaletteColor: function(color) {
+    this.setState({hue: this.state.hueMap[color]});
   },
 
   handleSpace: function(e) {
@@ -84,8 +115,14 @@ var Board = React.createClass({
     };
 
     return (
-      <div onKeyPress={this.handleSpace}>
-        {tiles}
+      <div>
+        <div onKeyPress={this.handleSpace}>
+          <PaletteColor color='red' onClick={this.changePaletteColor} />
+          <PaletteColor color='blue' onClick={this.changePaletteColor} />
+          <PaletteColor color='green' onClick={this.changePaletteColor} />
+          <PaletteColor color='yellow' onClick={this.changePaletteColor} />
+          {tiles}
+        </div>
       </div>
     );
   }
