@@ -34,7 +34,7 @@ var Palette = React.createClass({
 
   render: function() {
     var tiles = this.props.colors.map(function(color) {
-      return <Tile color={color} onClick={this.onClick} />
+      return <Tile key={color} color={color} onClick={this.onClick} />
     }.bind(this));
     return (
       <div className="palette">
@@ -51,6 +51,7 @@ var Board = React.createClass({
       tilesData: this.generateTilesData(),
       hue: [0, 1, 2, 3, 4, 5],
       hueMap: {
+        'random': [0, 1, 2, 3, 4, 5],
         'red': [0, 1],
         'green': [2, 3],
         'blue': [4, 5],
@@ -103,7 +104,15 @@ var Board = React.createClass({
   },
 
   changePaletteColor: function(color) {
-    this.setState({hue: this.state.hueMap[color]});
+    if (this.state.hue == this.state.hueMap[color]) {
+      this.resetPaletteColor();
+    } else {
+      this.setState({hue: this.state.hueMap[color]});
+    }
+  },
+
+  resetPaletteColor: function() {
+    this.setState({hue: this.state.hueMap['random']});
   },
 
   handleSpace: function(e) {
