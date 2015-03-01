@@ -27,33 +27,6 @@ var Tile = React.createClass({
   }
 });
 
-//var PaletteColor = React.createClass({
-//  propTypes: {
-//    colors: React.PropTypes.array,
-//    color: React.PropTypes.string
-//  },
-//
-//  getInitialState: function() {
-//    return {
-//      colors: this.props.color
-//    };
-//  },
-//
-//  render: function() {
-//    var tiles = [];
-//    this.state.colors.map(function(color) {
-//      return tiles.push(
-//        <Tile onClick={this.props.onClick} color={this.props.color} />
-//      )
-//    });
-//    return (
-//      <div class="palette">
-//        {tiles}
-//      </div>
-//    )
-//  }
-//});
-
 var Board = React.createClass({
   getInitialState: function() {
     return {
@@ -127,18 +100,18 @@ var Board = React.createClass({
     var tiles = [];
 
     for (var i in this.state.tilesData) {
-      tiles.push(<Tile color={this.state.tilesData[i]} active={this.state.activeState} index={i} onMouseOver={this.changeTileColor} />);
+      tiles.push(
+        <Tile color={this.state.tilesData[i]} active={this.state.activeState} index={i} onMouseOver={this.changeTileColor} />
+      );
     };
 
     return (
-      <div>
-        <div onKeyPress={this.handleSpace}>
-          <Tile color='red' onClick={this.changePaletteColor} />
-          <Tile color='blue' onClick={this.changePaletteColor} />
-          <Tile color='green' onClick={this.changePaletteColor} />
-          <Tile color='yellow' onClick={this.changePaletteColor} />
-          {tiles}
-        </div>
+      <div onKeyPress={this.handleSpace}>
+        <Tile color='red' onClick={this.changePaletteColor} />
+        <Tile color='blue' onClick={this.changePaletteColor} />
+        <Tile color='green' onClick={this.changePaletteColor} />
+        <Tile color='yellow' onClick={this.changePaletteColor} />
+        {tiles}
       </div>
     );
   }
