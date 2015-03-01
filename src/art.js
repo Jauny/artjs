@@ -33,12 +33,12 @@ var Palette = React.createClass({
   },
 
   render: function() {
+    var tiles = this.props.colors.map(function(color) {
+      return <Tile color={color} onClick={this.onClick} />
+    }.bind(this));
     return (
       <div className="palette">
-        <Tile color='red' onClick={this.changePaletteColor} onClick={this.onClick} />
-        <Tile color='blue' onClick={this.changePaletteColor} onClick={this.onClick} />
-        <Tile color='green' onClick={this.changePaletteColor} onClick={this.onClick} />
-        <Tile color='yellow' onClick={this.changePaletteColor} onClick={this.onClick} />
+        {tiles}
       </div>
     );
   }
@@ -124,7 +124,7 @@ var Board = React.createClass({
 
     return (
       <div onKeyPress={this.handleSpace}>
-        <Palette onClick={this.changePaletteColor} />
+        <Palette onClick={this.changePaletteColor} colors={['red', 'green', 'blue']} />
         {tiles}
       </div>
     );
