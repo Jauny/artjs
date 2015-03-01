@@ -49,13 +49,11 @@ var Board = React.createClass({
     return {
       active: false,
       tilesData: this.generateTilesData(),
-      hue: [0, 1, 2, 3, 4, 5],
-      hueMap: {
-        'random': [0, 1, 2, 3, 4, 5],
-        'red': [0, 1],
-        'green': [2, 3],
-        'blue': [4, 5],
-        'yellow': [0, 1, 2, 3]
+      currentColor: false,
+      colors: {
+        'red': true,
+        'green': true,
+        'blue': true
       }
     };
   },
@@ -84,15 +82,12 @@ var Board = React.createClass({
   },
 
   generateColor: function() {
-    var hexa = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f'],
-      color = [0, 0, 0, 0, 0, 0];
+    var r, g, b;
+    r = this.state.colors['red'] ? Math.floor(Math.random() * 255) : 0;
+    g = this.state.colors['green'] ? Math.floor(Math.random() * 255) : 0;
+    b = this.state.colors['blue'] ? Math.floor(Math.random() * 255) : 0;
 
-    this.state.hue.forEach(function(index) {
-      var code = Math.floor(Math.ceil(Math.random() * 10) * 1.4);
-      color[index] = hexa[code];
-    });
-
-    return '#' + color.join('');
+    return 'rgb(' + r + ',' + g + ',' + b + ')';
   },
 
   changeTileColor: function(index) {
@@ -104,21 +99,31 @@ var Board = React.createClass({
   },
 
   changePaletteColor: function(color) {
-    if (this.state.hue == this.state.hueMap[color]) {
-      this.resetPaletteColor();
-    } else {
-      this.setState({hue: this.state.hueMap[color]});
+    if (this.state.currentColor == color) {
+      return this.resetPaletteColor();
     }
+
+    var colors = {};
+    for (var c in this.state.colors) {
+      c == color ? colors[c] = true : colors[c] = false;
+    }
+    return this.setState({colors: colors, currentColor: color});
   },
 
   resetPaletteColor: function() {
-    this.setState({hue: this.state.hueMap['random']});
+    var colors = {
+      'red': true,
+      'green': true,
+      'blue': true
+    };
+
+    return this.setState({colors: colors, currentColor: false});
   },
 
   handleSpace: function(e) {
     if (e.which == 32) {
       e.preventDefault();
-      this.setState({active: !this.state.active});
+      return this.setState({active: !this.state.active});
     }
   },
 
